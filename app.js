@@ -1,21 +1,20 @@
 const express = require('express')
 const app = express()
-const PORT = 8080
+const mongoose  = require('mongoose')
+const PORT = process.env.PORT || 5000
+const {MONGOURI} = require('./keys')
 
-const customMiddleare = (req,res,next)=> {
-    console.log("middleare executed!!")
-    next()
-}
+require('./models/user')
+mongoose.connect(MONGOURI,{
+    useNewUrlParser:true,
+    useUnifiedTopology: true
 
-
-app.get('/',(req,res)=>{
-   console.log("Home")
-    res.send("hello word")
 })
-
-app.get('/about',customMiddleare,(req,res)=>{
-    console.log("About page")
-    res.send("about")
+mongoose.connection.on('connected',()=>{
+    console.log("conneted to mongo yeahh")
+})
+mongoose.connection.on('error',(err)=>{
+    console.log("err connecting",err)
 })
 
 app.listen(PORT,()=>{
